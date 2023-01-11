@@ -16,7 +16,7 @@ dependencies:
   path_provider: ^2.0.11
 
   # https://pub.dev/packages/archive
-  archive: ^3.3.5
+  archive: ^3.3.3
   # https://pub.dev/packages/http
   http: ^0.13.5
 
