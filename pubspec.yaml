@@ -1,6 +1,6 @@
 name: dynamic_content
 description: Dynamically update assets from remote sources
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
@@ -13,7 +13,8 @@ dependencies:
   easy_logger: ^0.0.2
 
   # https://pub.dev/packages/path_provider
-  path_provider: ^2.0.11
+  # FFI, web version compatibility
+  path_provider: ^1.6.14
 
   # https://pub.dev/packages/archive
   archive: 3.3.0
