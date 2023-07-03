@@ -1,6 +1,6 @@
 name: dynamic_content
 description: Dynamically update assets from remote sources
-version: 0.0.7
+version: 1.0.0
 
 environment:
   sdk: '>=2.18.6 <4.0.0'
@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
 
   # https://pub.dev/packages/easy_logger
-  easy_logger: ^0.0.2
+  easy_logger: '>=0.0.2'
 
   # https://pub.dev/packages/path_provider
   # FFI, web version compatibility
@@ -20,7 +20,7 @@ dependencies:
   # https://pub.dev/packages/archive
   archive: '>=3.3.7'
   # https://pub.dev/packages/http
-  http: 1.0.0
+  http: '>=1.0.0'
 
 dev_dependencies:
   flutter_test:
