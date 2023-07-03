@@ -1,9 +1,10 @@
 name: dynamic_content
 description: Dynamically update assets from remote sources
-version: 0.0.6
+version: 0.0.7
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=2.18.6 <4.0.0'
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
@@ -14,12 +15,12 @@ dependencies:
 
   # https://pub.dev/packages/path_provider
   # FFI, web version compatibility
-  path_provider: '>=2.0.11'
+  path_provider: '>=2.0.13'
 
   # https://pub.dev/packages/archive
-  archive: '>=3.3.2'
+  archive: '>=3.3.7'
   # https://pub.dev/packages/http
-  http: 0.13.5
+  http: 1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,6 @@ dev_dependencies:
     sdk: flutter
   test: any
 
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 flutter:
