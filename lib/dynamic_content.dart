@@ -1,5 +1,6 @@
 library dynamic_content;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,13 +34,13 @@ class DynamicContent {
       File('${(await storagePath()).path}/$name');
 
   Future<dynamic> fetch() async {
-    var json = await fetchRecentContent();
+    final json = await fetchRecentContent();
     if (json != null) {
       try {
         return jsonDecode(json);
-      } catch (e) {
-        logger.error("error during parsing remote json ($json) - $e");
-        deleteRecentContent();
+      } on Exception catch (e) {
+        logger.error('error during parsing remote json ($json) - $e');
+        unawaited(deleteRecentContent());
       }
     }
 
@@ -47,27 +48,27 @@ class DynamicContent {
   }
 
   Future<bool> update() async {
-    final recentContentTtlFile = await _localFile("$localPath.lastModified");
-    if (recentContentTtlFile.existsSync() &&
-        recentContentTtlFile
+    final ttlFile = await _localFile('$localPath.lastModified');
+    if (ttlFile.existsSync() &&
+        ttlFile
                 .lastModifiedSync()
                 .difference(DateTime.now())
                 .inSeconds <
             ttl.inSeconds) {
       logger.info(
-          "skip update from remote, last update at ${recentContentTtlFile.lastModifiedSync()}");
+          'skip update from remote, updated at ${ttlFile.lastModifiedSync()}');
       return false;
     }
 
     // refresh modification datetime
-    await recentContentTtlFile.writeAsString("${DateTime.now()}");
+    await ttlFile.writeAsString('${DateTime.now()}');
 
     final targetFile = await _localFile(localPath);
 
-    for (var variantUrl in variants) {
-      if (variantUrl.endsWith(".zip")) {
-        if (await _download(variantUrl, File(targetFile.path + ".zip"))) {
-          _extract(File(targetFile.path + ".zip"), targetFile.parent);
+    for (final variantUrl in variants) {
+      if (variantUrl.endsWith('.zip')) {
+        if (await _download(variantUrl, File('${targetFile.path}.zip'))) {
+          _extract(File('${targetFile.path}.zip'), targetFile.parent);
           if (targetFile.existsSync()) {
             return true;
           }
@@ -83,42 +84,42 @@ class DynamicContent {
   }
 
   Future<String?> fetchRecentContent() async {
-    File recentContent = await _localFile(localPath);
+    final recentContent = await _localFile(localPath);
 
-    logger.info("verify cached content for - ${recentContent.path}");
-    if (await recentContent.exists()) {
-      logger.info("get cached content for - ${recentContent.path}");
-      return await recentContent.readAsString();
+    logger.info('verify cached content for - ${recentContent.path}');
+    if (recentContent.existsSync()) {
+      logger.info('get cached content for - ${recentContent.path}');
+      return recentContent.readAsString();
     }
 
     return null;
   }
 
   Future<void> deleteRecentContent() async {
-    File recentContent = await _localFile(localPath);
+    final recentContent = await _localFile(localPath);
 
-    if (await recentContent.exists()) {
+    if (recentContent.existsSync()) {
       recentContent.deleteSync();
     }
   }
 
   Future<String> fetchAssetsContent() async {
-    logger.info("get content from bundle - $bundlePath");
+    logger.info('get content from bundle - $bundlePath');
     return rootBundle.loadString(bundlePath);
   }
 
   Future<bool> _download(final String url, final File file) async {
-    logger.info("fetch remote resource from $url");
-    Response response = await get(Uri.parse(url));
+    logger.info('fetch remote resource from $url');
+    final response = await get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      logger.info("successful fetch remote resource from $url");
+      logger.info('successful fetch remote resource from $url');
       await file.writeAsString(response.body);
 
       return true;
     } else {
       logger.info(
-          "cannot fetch remote resource from $url with status ${response.statusCode}");
+          'cannot fetch remote from $url with status ${response.statusCode}');
     }
 
     return false;
@@ -127,7 +128,7 @@ class DynamicContent {
   void _extract(File archiveFile, Directory targetDir) {
     final archive = ZipDecoder().decodeBytes(archiveFile.readAsBytesSync());
     for (final file in archive) {
-      logger.info("extract ${file.name} into ${targetDir.path}");
+      logger.info('extract ${file.name} into ${targetDir.path}');
       final filename = file.name;
       if (file.isFile) {
         File(targetDir.path + Platform.pathSeparator + filename)
@@ -135,7 +136,7 @@ class DynamicContent {
           ..writeAsBytesSync(file.content as List<int>);
       } else {
         Directory(targetDir.path + Platform.pathSeparator + filename)
-          ..create(recursive: true);
+            .create(recursive: true);
       }
     }
   }
