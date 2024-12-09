@@ -50,10 +50,7 @@ class DynamicContent {
   Future<bool> update() async {
     final ttlFile = await _localFile('$localPath.lastModified');
     if (ttlFile.existsSync() &&
-        ttlFile
-                .lastModifiedSync()
-                .difference(DateTime.now())
-                .inSeconds <
+        ttlFile.lastModifiedSync().difference(DateTime.now()).inSeconds <
             ttl.inSeconds) {
       logger.info(
           'skip update from remote, updated at ${ttlFile.lastModifiedSync()}');
